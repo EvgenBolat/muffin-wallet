@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "currency.fullName" . }}
+  labels:
+    {{- include "currency.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- include "currency.selector" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "currency.selector" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "currency.serviceAccount" . }}
+      containers:
+        - name: {{ include "currency.baseName" . }}
+          image: "{{ .Values.image.repo }}:{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.app.port }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.app.port }}
+            initialDelaySeconds: {{ .Values.probes.liveness.delay }}
+            periodSeconds: {{ .Values.probes.liveness.period }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.app.port }}
+            initialDelaySeconds: {{ .Values.probes.readiness.delay }}
+            periodSeconds: {{ .Values.probes.readiness.period }}

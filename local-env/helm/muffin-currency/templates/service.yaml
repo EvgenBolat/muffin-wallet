@@ -1,0 +1,16 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "currency.fullName" . }}
+  labels:
+    {{- include "currency.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.kind }}
+  selector:
+    {{- include "currency.selector" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
+{{- end }}

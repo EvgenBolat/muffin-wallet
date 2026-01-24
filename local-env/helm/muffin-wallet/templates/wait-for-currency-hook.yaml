@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "muffin-wallet.fullname" . }}-wait-for-currency"
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+    sidecar.istio.io/inject: "true"
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: wait
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for muffin-currency..."
+              MAX_RETRIES=10
+              i=1
+              while [ $i -le $MAX_RETRIES ]; do
+                if curl -sf http://muffin-currency:8083/rate?from=PLAIN&to=CHOKOLATE; then
+                  echo "Currency service is ready!"
+                  exit 0
+                fi
+                echo "Attempt $i/$MAX_RETRIES failed, retrying..."
+                sleep 5
+                i=$((i+1))
+              done
+
+              echo "Currency service is NOT ready after $MAX_RETRIES attempts"
+              exit 1

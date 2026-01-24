@@ -33,3 +33,7 @@ build
 
 # Ignore bin folders
 bin/
+
+local-env/venv
+
+local-env/data

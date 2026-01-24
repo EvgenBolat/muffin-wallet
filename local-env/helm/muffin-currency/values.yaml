@@ -1,0 +1,35 @@
+namespace: muffin
+
+replicas: 1
+
+app:
+  name: muffin-currency
+  port: 8080
+
+image:
+  repo: aadan1lov/muffin-currency
+  version: "1.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  enabled: true
+  kind: ClusterIP
+  externalPort: 8083
+  internalPort: 8080
+
+probes:
+  liveness:
+    path: /rate?from=PLAIN&to=CHOKOLATE
+    delay: 5
+    period: 10
+  readiness:
+    path: /rate?from=PLAIN&to=CHOKOLATE
+    delay: 2
+    period: 5
+
+autoscale:
+  enabled: false
+
+account:
+  enabled: true
+  name: currency-sa

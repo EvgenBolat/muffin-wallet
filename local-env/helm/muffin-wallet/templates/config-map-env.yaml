@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "muffin-wallet.fullname" . }}-env
+data:
+  JDK_JAVA_OPTIONS: "-Dspring.config.additional-location={{ .Values.env.appLocation }}"

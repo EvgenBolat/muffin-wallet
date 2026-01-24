@@ -1,11 +1,27 @@
 services:
   postgres:
+    container_name: muffin-postgres
     image: postgres
     ports:
-      - 5432:5432
+      - 5435:5432
     environment:
       - POSTGRES_USER=muffin-wallet
       - POSTGRES_PASSWORD=muffin-wallet
       - POSTGRES_DB=muffin_wallet
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/postgresql/data
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - 9090:9090
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+
+volumes:
+  db_data:

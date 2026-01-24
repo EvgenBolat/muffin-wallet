@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: external-postgres
+  namespace: {{ .Values.namespace }}
+spec:
+  host: {{ .Values.db.host }}
+  trafficPolicy:
+    tls:
+      mode: {{ .Values.db.trafficPolicy.tls.mode }}

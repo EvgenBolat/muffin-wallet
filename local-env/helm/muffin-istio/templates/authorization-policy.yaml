@@ -1,0 +1,14 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: currency-only-from-wallet
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: muffin-currency
+  rules:
+    - from:
+        - source:
+            principals:
+              - {{ printf "cluster.local/ns/%s/sa/%s" .Values.namespace .Values.serviceAccounts.wallet | quote }}

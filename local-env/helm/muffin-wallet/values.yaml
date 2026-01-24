@@ -1,0 +1,92 @@
+service:
+  port: 80
+  type: ClusterIP
+
+containerPort: 8081
+
+replicaCount: 1
+
+image:
+  repository: aadan1lov/muffin-wallet
+  tag: "1.1.0"
+  pullPolicy: Always
+
+config:
+  configName: muffin-wallet-config
+  mountPath: /app/config
+
+envFrom:
+  secretRefName: muffin-wallet-secret
+  configMapRefName: muffin-wallet-env
+
+probes:
+  port: 8081
+
+  liveness:
+    path: /actuator/health/liveness
+    initialDelaySeconds: 120
+    periodSeconds: 30
+    timeoutSeconds: 5
+
+  readiness:
+    path: /actuator/health/readiness
+    initialDelaySeconds: 120
+    periodSeconds: 30
+    timeoutSeconds: 5
+
+env:
+  appLocation: "/app/config/application.yaml"
+
+currency:
+  url: "http://muffin-currency:8083/rate"
+
+podAnnotations:
+  sidecar.istio.io/rewriteAppHTTPProbers: "true"
+  
+datasource:
+  url: "jdbc:postgresql://host.minikube.internal:5435/muffin_wallet"
+  username: muffin-wallet
+  password: bXVmZmluLXdhbGxldA==
+
+
+serviceAccount:
+  create: true
+  name: wallet-sa
+
+serviceLog:
+  port: 80
+  name: muffin-wallet-log
+  targetPort: 80
+
+logs:
+  mountPath: /logs
+
+nginx:
+  image:
+    repository: nginx
+    tag: "1.29.3"
+    pullPolicy: IfNotPresent
+  containerPort: 80
+  configName: nginx-config
+  configMountPath: /etc/nginx
+  logsMountPath: /usr/share/nginx/html
+
+  config: |
+    events {
+    }
+
+    http {
+        server {
+            listen 80;
+            location /logs {
+                alias /usr/share/nginx/html;
+                autoindex on;
+            }
+        }
+    }
+
+logging:
+  file: "/logs/app.log"
+
+
+

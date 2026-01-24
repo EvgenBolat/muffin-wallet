@@ -1,0 +1,23 @@
+releases:
+  - name: muffin-currency
+    namespace: muffin
+    chart: ./muffin-currency
+    values:
+      - ./muffin-currency/values.yaml
+
+  - name: muffin-wallet
+    namespace: muffin
+    chart: ./muffin-wallet
+    values:
+      - ./muffin-wallet/values.yaml
+    needs:
+      - muffin/muffin-currency
+
+  - name: muffin-istio
+    namespace: muffin
+    chart: ./muffin-istio
+    values:
+      - ./muffin-istio/values.yaml
+    needs:
+      - muffin/muffin-wallet
+      - muffin/muffin-currency

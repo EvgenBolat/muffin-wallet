@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "muffin-wallet.fullname" . }}
+  labels:
+    {{- include "muffin-wallet.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "muffin-wallet.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "muffin-wallet.selectorLabels" . | nindent 8 }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
+
+      volumes:
+        - name: application-config-volume
+          configMap:
+            name: {{ .Values.config.configName }}
+        - name: nginx-config-volume
+          configMap:
+            name: {{ .Values.nginx.configName }}
+        - name: log-volume
+          emptyDir: {}
+
+      containers:
+        - name: nginx-log
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.nginx.containerPort }}
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: {{ .Values.nginx.configMountPath }}
+            - name: log-volume
+              mountPath: {{ .Values.nginx.logsMountPath }}
+
+        - name: muffin-wallet
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+
+          volumeMounts:
+            - name: application-config-volume
+              mountPath: {{ .Values.config.mountPath }}
+            - name: log-volume
+              mountPath: {{ .Values.logs.mountPath }}
+
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envFrom.secretRefName }}
+            - configMapRef:
+                name: {{ .Values.envFrom.configMapRefName }}
+
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.probes.port }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.probes.port }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}

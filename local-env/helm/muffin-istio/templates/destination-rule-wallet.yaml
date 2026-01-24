@@ -1,0 +1,11 @@
+
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: muffin-wallet
+  namespace: {{ .Values.namespace }}
+spec:
+  host: {{ .Values.services.wallet.host }}
+  trafficPolicy:
+    tls:
+      mode: {{ .Values.tls.mode }}

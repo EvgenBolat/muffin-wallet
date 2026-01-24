@@ -1,0 +1,14 @@
+global:
+  scrape_interval: 15s # (Раз в 15 секунд прометеус приходит собирать метрики)
+  evaluation_interval: 15s # если значения точно не совадают при получении среза он может подвинуть данные на вот этот интервал
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: "muffin"
+    metrics_path: "/actuator/prometheus"
+    scheme: http
+    static_configs:
+      - targets: ['muffin-wallet.ru'] 
+
