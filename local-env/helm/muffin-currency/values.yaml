@@ -7,8 +7,8 @@ app:
   port: 8080
 
 image:
-  repo: aadan1lov/muffin-currency
-  version: "1.0.0"
+  repo: evgenbolat/muffin-currency
+  version: "1.3"
   pullPolicy: IfNotPresent
 
 service:

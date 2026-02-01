@@ -29,8 +29,11 @@ spec:
         - name: nginx-config-volume
           configMap:
             name: {{ .Values.nginx.configName }}
-        - name: log-volume
+        - name: logs
           emptyDir: {}
+        - name: promtail-config
+          configMap:
+            name: promtail-config
 
       containers:
         - name: nginx-log
@@ -41,8 +44,18 @@ spec:
           volumeMounts:
             - name: nginx-config-volume
               mountPath: {{ .Values.nginx.configMountPath }}
-            - name: log-volume
+            - name: logs
               mountPath: {{ .Values.nginx.logsMountPath }}
+      
+        - name: promtail
+          image: grafana/promtail:latest
+          args:
+            - -config.file=/etc/promtail/promtail.yaml
+          volumeMounts:
+            - name: logs
+              mountPath: /logs
+            - name: promtail-config
+              mountPath: /etc/promtail
 
         - name: muffin-wallet
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -53,8 +66,8 @@ spec:
           volumeMounts:
             - name: application-config-volume
               mountPath: {{ .Values.config.mountPath }}
-            - name: log-volume
-              mountPath: {{ .Values.logs.mountPath }}
+            - name: logs
+              mountPath: /logs
 
           envFrom:
             - secretRef:

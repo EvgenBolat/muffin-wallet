@@ -7,6 +7,8 @@ data:
     server:
       port: {{ .Values.containerPort }}
     spring:
+      application:
+        name: "muffin-wallet"
       datasource:
         url: {{ .Values.datasource.url }}
         username: {{ .Values.datasource.username }}
@@ -16,16 +18,26 @@ data:
         url: {{ .Values.currency.url }}
 
     logging:
+      pattern:
+        level: "%5p [%X{traceId:-},%X{spanId:-}]"
       file:
         name: {{ .Values.logging.file }}
 
     management:
+      tracing:
+        sampling:
+          probability: 1.0 # Sample 100% of traces for demo
+      zipkin:
+        tracing:
+          endpoint: "http://host.minikube.internal:9411/api/v2/spans" # Zipkin's v2 API
       endpoints:
         web:
           exposure:
-            include: health, info, prometheus
+            include: '*'
       endpoint:
         health:
           probes:
             enabled: true
           show-details: always
+
+    management.metrics.distribution.percentiles-histogram.http.server.requests: true

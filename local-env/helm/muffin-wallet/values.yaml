@@ -7,8 +7,8 @@ containerPort: 8081
 replicaCount: 1
 
 image:
-  repository: aadan1lov/muffin-wallet
-  tag: "1.1.0"
+  repository: evgenbolat/muffin-wallet
+  tag: "latest"
   pullPolicy: Always
 
 config:
@@ -58,8 +58,6 @@ serviceLog:
   name: muffin-wallet-log
   targetPort: 80
 
-logs:
-  mountPath: /logs
 
 nginx:
   image:
@@ -69,7 +67,7 @@ nginx:
   containerPort: 80
   configName: nginx-config
   configMountPath: /etc/nginx
-  logsMountPath: /usr/share/nginx/html
+  logsMountPath: /logs
 
   config: |
     events {
