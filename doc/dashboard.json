@@ -18,133 +18,125 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 0,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "datasource": {
         "type": "loki",
-        "uid": "P8E80F9AEF21F6940"
+        "uid": "loki"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 16,
+        "h": 12,
+        "w": 24,
         "x": 0,
         "y": 0
       },
       "id": 1,
       "options": {
         "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
         "enableLogDetails": true,
         "prettifyLogMessage": false,
-        "showCommonLabels": false,
-        "showLabels": false,
+        "showCommonLabels": true,
+        "showControls": false,
+        "showLabels": true,
         "showTime": true,
         "sortOrder": "Descending",
-        "wrapLogMessage": false
+        "wrapLogMessage": true
       },
+      "pluginVersion": "12.3.2",
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
-          },
+          "direction": "backward",
           "editorMode": "code",
-          "expr": "{app=\"muffin-wallet\", container=\"muffin-wallet\"} |~ \"$LogLevel\"",
+          "expr": "{logLevel=\"$logLevel\", traceId=\"$traceId\"}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Логи muffin-wallet",
+      "title": "Logs (filtered by traceId & logLevel)",
       "type": "logs"
     },
     {
       "datasource": {
         "type": "zipkin",
-        "uid": "d0325dce-4c7f-4855-a9ea-e484eb1f3fd2"
+        "uid": "zipkin"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
       },
       "gridPos": {
-        "h": 17,
-        "w": 8,
-        "x": 16,
-        "y": 0
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 12
       },
-      "id": 3,
-      "pluginVersion": "10.3.3",
+      "id": 2,
+      "options": {
+        "spanFilters": {
+          "criticalPathOnly": false,
+          "matchesOnly": false,
+          "serviceNameOperator": "=",
+          "spanNameOperator": "=",
+          "tags": [
+            {
+              "id": "0e91a59f-6d0",
+              "operator": "="
+            }
+          ]
+        }
+      },
+      "pluginVersion": "12.3.2",
       "targets": [
         {
-          "datasource": {
-            "type": "zipkin",
-            "uid": "d0325dce-4c7f-4855-a9ea-e484eb1f3fd2"
-          },
-          "query": "$TraceId",
+          "query": "$traceId",
           "queryType": "traceID",
           "refId": "A"
         }
       ],
-      "title": "Трейс",
+      "title": "Zipkin Trace by traceId",
       "type": "traces"
-    },
-    {
-      "datasource": {
-        "type": "loki",
-        "uid": "P8E80F9AEF21F6940"
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 16,
-        "x": 0,
-        "y": 8
-      },
-      "id": 2,
-      "options": {
-        "dedupStrategy": "none",
-        "enableLogDetails": true,
-        "prettifyLogMessage": true,
-        "showCommonLabels": false,
-        "showLabels": false,
-        "showTime": true,
-        "sortOrder": "Descending",
-        "wrapLogMessage": false
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
-          },
-          "editorMode": "code",
-          "expr": "{app=\"muffin-currency\", container=\"muffin-currency\"} |~ \"$LogLevel\"",
-          "queryType": "range",
-          "refId": "A"
-        }
-      ],
-      "title": "Логи muffin-currency",
-      "type": "logs"
     }
   ],
+  "preload": false,
   "refresh": "",
-  "schemaVersion": 39,
-  "tags": [],
+  "schemaVersion": 42,
+  "tags": [
+    "logs",
+    "tracing",
+    "observability"
+  ],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": true,
-          "text": [
-            "INFO",
-            "ERROR"
-          ],
-          "value": [
-            "INFO",
-            "ERROR"
-          ]
+          "text": "72a207f615c1e3ca22488fc7f2429919",
+          "value": "72a207f615c1e3ca22488fc7f2429919"
         },
-        "hide": 0,
-        "includeAll": false,
-        "multi": true,
-        "name": "LogLevel",
+        "label": "traceId",
+        "name": "traceId",
+        "options": [
+          {
+            "selected": true,
+            "text": "72a207f615c1e3ca22488fc7f2429919",
+            "value": "72a207f615c1e3ca22488fc7f2429919"
+          }
+        ],
+        "query": "72a207f615c1e3ca22488fc7f2429919",
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "text": "INFO",
+          "value": "INFO"
+        },
+        "name": "logLevel",
         "options": [
           {
             "selected": true,
@@ -157,7 +149,7 @@
             "value": "WARN"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "ERROR",
             "value": "ERROR"
           },
@@ -168,39 +160,17 @@
           }
         ],
         "query": "INFO, WARN, ERROR, DEBUG",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": "697ceba292eb899c540039f5f07e6bf8",
-          "value": "697ceba292eb899c540039f5f07e6bf8"
-        },
-        "hide": 0,
-        "name": "TraceId",
-        "options": [
-          {
-            "selected": true,
-            "text": "697ceba292eb899c540039f5f07e6bf8",
-            "value": "697ceba292eb899c540039f5f07e6bf8"
-          }
-        ],
-        "query": "697ceba292eb899c540039f5f07e6bf8",
-        "skipUrlSync": false,
-        "type": "textbox"
       }
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Логи и трейсы",
-  "uid": "f16a8d02-c8e0-44eb-ac7c-0d9685bd9b23",
-  "version": 8,
-  "weekStart": ""
+  "title": "Muffin Observability: Logs + Traces",
+  "uid": "muffin-logs-traces",
+  "version": 7
 }
