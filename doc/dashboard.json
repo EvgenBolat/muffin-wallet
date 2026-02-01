@@ -1,0 +1,206 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "{app=\"muffin-wallet\", container=\"muffin-wallet\"} |~ \"$LogLevel\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Логи muffin-wallet",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "zipkin",
+        "uid": "d0325dce-4c7f-4855-a9ea-e484eb1f3fd2"
+      },
+      "gridPos": {
+        "h": 17,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 3,
+      "pluginVersion": "10.3.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "zipkin",
+            "uid": "d0325dce-4c7f-4855-a9ea-e484eb1f3fd2"
+          },
+          "query": "$TraceId",
+          "queryType": "traceID",
+          "refId": "A"
+        }
+      ],
+      "title": "Трейс",
+      "type": "traces"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 16,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "{app=\"muffin-currency\", container=\"muffin-currency\"} |~ \"$LogLevel\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Логи muffin-currency",
+      "type": "logs"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "INFO",
+            "ERROR"
+          ],
+          "value": [
+            "INFO",
+            "ERROR"
+          ]
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "LogLevel",
+        "options": [
+          {
+            "selected": true,
+            "text": "INFO",
+            "value": "INFO"
+          },
+          {
+            "selected": false,
+            "text": "WARN",
+            "value": "WARN"
+          },
+          {
+            "selected": true,
+            "text": "ERROR",
+            "value": "ERROR"
+          },
+          {
+            "selected": false,
+            "text": "DEBUG",
+            "value": "DEBUG"
+          }
+        ],
+        "query": "INFO, WARN, ERROR, DEBUG",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "697ceba292eb899c540039f5f07e6bf8",
+          "value": "697ceba292eb899c540039f5f07e6bf8"
+        },
+        "hide": 0,
+        "name": "TraceId",
+        "options": [
+          {
+            "selected": true,
+            "text": "697ceba292eb899c540039f5f07e6bf8",
+            "value": "697ceba292eb899c540039f5f07e6bf8"
+          }
+        ],
+        "query": "697ceba292eb899c540039f5f07e6bf8",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Логи и трейсы",
+  "uid": "f16a8d02-c8e0-44eb-ac7c-0d9685bd9b23",
+  "version": 8,
+  "weekStart": ""
+}
